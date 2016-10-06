@@ -35,6 +35,13 @@ function User() {
                     //var duplicateResult = new LINQ(result[0]);
                     //var types = result[0].filter((x, i, a) => a.indexOf(x) == i);
 
+                    Array.prototype.contains = function(v) {
+                        for(var i = 0; i < this.length; i++) {
+                            if(this[i] === v) return true;
+                        }
+                        return false;
+                    };
+
                     Array.prototype.unique = function() {
                         var arr = [];
                         for(var i = 0; i < this.length; i++) {
