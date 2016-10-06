@@ -62,9 +62,7 @@ function User() {
                         jsonObject.push({type: result[0][i].Type, startingQuestion : result[0][i].StartingQuestion});
                     }
 
-                    var json = _.uniq(jsonObject, true , function (item) {
-                        return item;
-                    })
+                    var json = _.uniq(jsonObject);
 
                     //res.json(result[0]);
                     res.send(json);
