@@ -1,4 +1,5 @@
 var connection = require('./connection');
+var _ = require('underscore');
 
 function User() {
 
@@ -61,7 +62,9 @@ function User() {
                         jsonObject.push({type: result[0][i].Type, startingQuestion : result[0][i].StartingQuestion});
                     }
 
-                    var json = jsonObject.unique();
+                    var json = _.uniq(jsonObject, true , function (item) {
+                        return item;
+                    })
 
                     //res.json(result[0]);
                     res.send(json);
