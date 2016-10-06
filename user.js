@@ -35,22 +35,20 @@ function User() {
                     var jsonObject = [];
                     //var types = result.filter((x, i, a) => a.indexOf(x) == i);
 
-                    for(var i = 0; i < result.length; i++){
-                        jsonQuestionObject.push({questionId : result[i].QuestionId});
-                        jsonQuestionObject.push({question : result[i].Question});
-                        jsonQuestionObject.push({choiceType : result[i].ChoiceType});
-                        jsonQuestionObject.push({options : result[i].Options});
-                        jsonQuestionObject.push({additionalQuestion : result[i].AdditionalQuestion});
-                        jsonQuestionObject.push(result.length);
-
+                    for(var i = 0; i < result[0].length; i++){
+                        jsonQuestionObject.push({questionId : result[0][i].QuestionId});
+                        jsonQuestionObject.push({question : result[0][i].Question});
+                        jsonQuestionObject.push({choiceType : result[0][i].ChoiceType});
+                        jsonQuestionObject.push({options : result[0][i].Options});
+                        jsonQuestionObject.push({additionalQuestion : result[0][i].AdditionalQuestion});
                     }
 
                     // for(var i = 0; i < result.length; i++){
                     //     jsonObject.push({type: result.})
                     // }
 
-                    res.json(result[0]);
-                    //res.send(JSON.stringify(jsonQuestionObject));
+                    //res.json(result[0]);
+                    res.send(JSON.stringify(jsonQuestionObject));
                 }else{
                     res.send({'status': 'Couldn\'t get the questions'});
                 }
