@@ -36,19 +36,15 @@ function User() {
                     //var types = result.filter((x, i, a) => a.indexOf(x) == i);
 
                     for(var i = 0; i < result[0].length; i++){
-                        jsonQuestionObject.push({questionId : result[0][i].QuestionId});
-                        jsonQuestionObject.push({question : result[0][i].Question});
-                        jsonQuestionObject.push({choiceType : result[0][i].ChoiceType});
-                        jsonQuestionObject.push({options : result[0][i].Options});
-                        jsonQuestionObject.push({additionalQuestion : result[0][i].AdditionalQuestion});
+                        jsonQuestionObject.push({questionId : result[0][i].QuestionId, question : result[0][i].Question, choiceType : result[0][i].ChoiceType, options : result[0][i].Options, additionalQuestion : result[0][i].AdditionalQuestion});
                     }
 
-                    // for(var i = 0; i < result.length; i++){
-                    //     jsonObject.push({type: result.})
-                    // }
+                    for(var i = 0; i < result[0].length; i++){
+                        jsonObject.push({type: result[0][i].Type, startingQuestion : result[0][i].StartingQuestion,questions: jsonQuestionObject});
+                    }
 
                     //res.json(result[0]);
-                    res.send(JSON.stringify(jsonQuestionObject));
+                    res.send(JSON.stringify(jsonObject));
                 }else{
                     res.send({'status': 'Couldn\'t get the questions'});
                 }
