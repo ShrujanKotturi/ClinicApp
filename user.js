@@ -65,7 +65,7 @@ function User() {
                     //var json = _.uniq(jsonObject);
                     var json = [];
                     for (var i = 0; i < jsonObject.length; i++){
-                        if(json.indexOf(jsonObject[i].type) === -1){
+                        if(json.indexOf(jsonObject[i]) === -1){
                             json.push(jsonObject[i]);
                         }
                     }
