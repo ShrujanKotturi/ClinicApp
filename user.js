@@ -32,7 +32,7 @@ function User() {
                 }else if(result.length != 0){
                     var jsonQuestionObject = [];
                     var jsonObject = [];
-                    var duplicateResult = new LINQ(result[0]);
+                    //var duplicateResult = new LINQ(result[0]);
                     //var types = result[0].filter((x, i, a) => a.indexOf(x) == i);
 
                     Array.prototype.unique = function() {
