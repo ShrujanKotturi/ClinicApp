@@ -1,5 +1,4 @@
 var connection = require('./connection');
-var LINQ = require('node-linq').LINQ;
 
 function User() {
 
@@ -36,6 +35,16 @@ function User() {
                     var duplicateResult = new LINQ(result[0]);
                     //var types = result[0].filter((x, i, a) => a.indexOf(x) == i);
 
+                    Array.prototype.unique = function() {
+                        var arr = [];
+                        for(var i = 0; i < this.length; i++) {
+                            if(!arr.contains(this[i])) {
+                                arr.push(this[i]);
+                            }
+                        }
+                        return arr;
+                    }
+
 
                     for(var i = 0; i < result[0].length; i++){
                         jsonQuestionObject.push({type : result[0][i].JoinType,questionId : result[0][i].QuestionId, question : result[0][i].Question, choiceType : result[0][i].ChoiceType, options : result[0][i].Options, additionalQuestion : result[0][i].AdditionalQuestion});
@@ -45,8 +54,8 @@ function User() {
                         jsonObject.push({type: result[0][i].Type, startingQuestion : result[0][i].StartingQuestion});
                     }
 
-                    var json = new LINQ(jsonObject).Single();
-                    
+                    var json = jsonObject.unique();
+
                     //res.json(result[0]);
                     res.send(json);
                 }else{
