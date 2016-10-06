@@ -30,7 +30,7 @@ module.exports = {
            user.GetQuestions(req, res);
         });
 
-        app.post('/PostResponses/', function (req, res){
+        app.post('/PostResponses', function (req, res){
             user.PostResponse(req.body, res);
         });
     }

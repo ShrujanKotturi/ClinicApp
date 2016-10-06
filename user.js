@@ -5,8 +5,9 @@ function User() {
 
     //User
     this.UserLogin = function (req, res){
-        connection.acquire(function (err,con){
-           var sql = con.query('SELECT * FROM Users WHERE UserName = ? AND UserPassword = ?', [req.username, req.userpassword], function(err, result){
+        connection.acquire(function (err, con){
+            console.log(req);
+           var sql = con.query('SELECT * FROM Users WHERE UserName = ? AND UserPassword = ?', [req.username, req.userpassword] , function(err, result){
                con.release();
                console.log('UserLogin :' + sql.sql);
                if(err){
@@ -72,7 +73,8 @@ function User() {
                     }
 
                     //res.json(result[0]);
-                    res.send(json);
+                    //res.send(json);
+                    res.send(jsonQuestionObject);
                 }else{
                     res.send({'status': 'Couldn\'t get the questions'});
                 }
