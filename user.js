@@ -41,7 +41,7 @@ function User() {
                     }
 
                     for(var i = 0; i < result[0].length; i++){
-                            if(!jsonObject.contains(result[0][i].Type))
+                            if(!jsonObject.includes({type: result[0][i].Type, startingQuestion : result[0][i].StartingQuestion}))
                                 jsonObject.push({type: result[0][i].Type, startingQuestion : result[0][i].StartingQuestion});
                     }
 
