@@ -41,7 +41,7 @@ function User() {
                         jsonQuestionObject.push({choiceType : result[i].ChoiceType});
                         jsonQuestionObject.push({options : result[i].Options});
                         jsonQuestionObject.push({additionalQuestion : result[i].AdditionalQuestion});
-                        jsonQuestionObject.push(result[i]);
+                        jsonQuestionObject.push(result[i].Question);
 
                     }
 
