@@ -16,7 +16,7 @@ function Admin() {
             } else{
                 res.send({'status': 'Admin Name and Password combination failed'});
             }
-            console.log("AdminQuery :" + sql.sql);
+            console.log("AdminQuery : " + sql.sql);
          });
       });
     };
@@ -31,7 +31,7 @@ function Admin() {
            } else{
                res.send({'status' : 'User created successfully'});
            }
-           console.log("UserCreated :" + sql.sql);
+           console.log("UserCreated : " + sql.sql);
         });
       });
     };
@@ -50,7 +50,7 @@ function Admin() {
               else{
                 res.send({'status' : 'No users created until now'});
               }
-              console.log("GetAllUsers :" + sql.sql);
+              console.log("GetAllUsers : " + sql.sql);
           }
         });
       });
@@ -66,7 +66,7 @@ function Admin() {
             }else{
                 res.send(result);
             }
-            console.log('GetUserResponse :' + sql.sql);
+            console.log('GetUserResponse : ' + sql.sql);
         });
       });
     };

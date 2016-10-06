@@ -6,10 +6,9 @@ function User() {
     //User
     this.UserLogin = function (req, res){
         connection.acquire(function (err, con){
-            console.log(req);
            var sql = con.query('SELECT * FROM Users WHERE UserName = ? AND UserPassword = ?', [req.username, req.userpassword] , function(err, result){
                con.release();
-               console.log('UserLogin :' + sql.sql);
+               console.log('UserLogin : ' + sql.sql);
                if(err){
                    console.error(err);
                    res.send({'status' : 'Failed to get user with the provided details'});
@@ -27,7 +26,7 @@ function User() {
         connection.acquire(function (err, con){
            var sql = con.query('CALL sp_getAllQuestions()', function (err, result) {
                 con.release();
-                console.log('GetQuestions :' + sql.sql);
+                console.log('GetQuestions : ' + sql.sql);
                 if(err){
                     console.error(err);
                     res.send({'status' : 'Error getting the questions'});
@@ -86,7 +85,7 @@ function User() {
         connection.acquire(function (err, con) {
           var sql = con.query('INSERT INTO UserResponse SET UserId = ?, Answers = ?', [req.userid, req.response], function (err, result) {
               con.release();
-              console.log('PostResponse :' +sql.sql);
+              console.log('PostResponse : ' +sql.sql);
               if(err){
                   console.error(err);
                   res.send({'status': 'Problem posting messages, check log for further assistance'});
