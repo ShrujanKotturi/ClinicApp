@@ -23,7 +23,7 @@ function Admin() {
 
     this.CreateUser = function (req, res){
       connection.acquire(function (err, con){
-        var sql = con.query('INSERT INTO Users SET UserName = ?, Password = ?', [req.username, req.password], function (err,result) {
+        var sql = con.query('INSERT INTO Users SET UserName = ?, UserPassword = ?', [req.username, req.password], function (err,result) {
             con.release();
            if(err){
                console.error(err);
