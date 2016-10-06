@@ -34,14 +34,14 @@ function User() {
                     var jsonQuestionObject = [];
                     var jsonObject = [];
                     //var types = result.filter((x, i, a) => a.indexOf(x) == i);
-                    result= JSON.stringify(result);
+
                     for(var i = 0; i < result.length; i++){
                         jsonQuestionObject.push({questionId : result[i].QuestionId});
                         jsonQuestionObject.push({question : result[i].Question});
                         jsonQuestionObject.push({choiceType : result[i].ChoiceType});
                         jsonQuestionObject.push({options : result[i].Options});
                         jsonQuestionObject.push({additionalQuestion : result[i].AdditionalQuestion});
-                        jsonQuestionObject.push(result[i].Question);
+                        jsonQuestionObject.push(result.length);
 
                     }
 
