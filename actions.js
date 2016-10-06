@@ -50,7 +50,7 @@ function Admin() {
               else{
                 res.send({'status' : 'No users created until now'});
               }
-              console.log("GetAllUsers" + sql.sql);
+              console.log("GetAllUsers :" + sql.sql);
           }
         });
       });
@@ -66,7 +66,7 @@ function Admin() {
             }else{
                 res.send(result);
             }
-            console.log(sql.sql);
+            console.log('GetUserResponse :' + sql.sql);
         });
       });
     };

@@ -6,7 +6,7 @@ function User() {
     //User
     this.UserLogin = function (req, res){
         connection.acquire(function (err,con){
-           var sql = con.query('SELECT * FROM Users WHERE UserId = ? AND Password = ?', function(err, result){
+           var sql = con.query('SELECT * FROM Users WHERE UserId = ? AND UserPassword = ?', [req.userid, req.userpassword], function(err, result){
                con.release();
                console.log('UserLogin :' + sql.sql);
                if(err){

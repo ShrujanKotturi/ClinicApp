@@ -23,7 +23,7 @@ module.exports = {
 
         //Users
         app.post('/Authenticate', function (req, res){
-            user.UserLogin(req, res);
+            user.UserLogin(req.body, res);
         });
 
         app.get('/GetQuestions', function (req, res){
