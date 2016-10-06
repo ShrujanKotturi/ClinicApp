@@ -1,5 +1,5 @@
 var connection = require('./connection');
-var delimiter = ',';
+var LINQ = require('node-linq').LINQ;
 
 function User() {
 
@@ -33,20 +33,22 @@ function User() {
                 }else if(result.length != 0){
                     var jsonQuestionObject = [];
                     var jsonObject = [];
-                    var duplicateResult = result[0];
+                    var duplicateResult = new LINQ(result[0]);
                     //var types = result[0].filter((x, i, a) => a.indexOf(x) == i);
+
 
                     for(var i = 0; i < result[0].length; i++){
                         jsonQuestionObject.push({type : result[0][i].JoinType,questionId : result[0][i].QuestionId, question : result[0][i].Question, choiceType : result[0][i].ChoiceType, options : result[0][i].Options, additionalQuestion : result[0][i].AdditionalQuestion});
                     }
 
                     for(var i = 0; i < result[0].length; i++){
-                            if(!jsonObject.includes({type: result[0][i].Type, startingQuestion : result[0][i].StartingQuestion}))
-                                jsonObject.push({type: result[0][i].Type, startingQuestion : result[0][i].StartingQuestion});
+                        jsonObject.push({type: result[0][i].Type, startingQuestion : result[0][i].StartingQuestion});
                     }
 
+                    var json = new LINQ(jsonObject).Single();
+                    
                     //res.json(result[0]);
-                    res.send(jsonObject);
+                    res.send(json);
                 }else{
                     res.send({'status': 'Couldn\'t get the questions'});
                 }
