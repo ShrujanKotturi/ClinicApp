@@ -31,13 +31,24 @@ function User() {
                     console.error(err);
                     res.send({'status' : 'Error getting the questions'});
                 }else if(result.length != 0){
+                    var jsonQuestionObject = [];
                     var jsonObject = [];
+                    //var types = result.filter((x, i, a) => a.indexOf(x) == i);
+
                     for(var i = 0; i < result.length; i++){
-
-
+                        jsonQuestionObject.push({questionId : result.QuestionId});
+                        jsonQuestionObject.push({question : result.Question});
+                        jsonQuestionObject.push({choiceType : result.ChoiceType});
+                        jsonQuestionObject.push({options : result.Options});
+                        jsonQuestionObject.push({additionalQuestion : result.AdditionalQuestion});
                     }
-                    res.send(result);
-                    //res.send(JSON.stringify(jsonObject));
+
+                    // for(var i = 0; i < result.length; i++){
+                    //     jsonObject.push({type: result.})
+                    // }
+
+                    //res.send(result);
+                    res.send(JSON.stringify(jsonObject));
                 }else{
                     res.send({'status': 'Couldn\'t get the questions'});
                 }
