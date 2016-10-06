@@ -11,8 +11,10 @@ function Admin() {
             if(err){
                 console.error(err);
                 res.send({'status': 'Admin Name and Password combination failed'});
-            } else{
+            } else if(result.length != 0){
                 res.send({'status': 'Admin authenticated'});
+            } else{
+                res.send({'status': 'Admin Name and Password combination failed'});
             }
             console.log("AdminQuery :" + sql.sql);
          });

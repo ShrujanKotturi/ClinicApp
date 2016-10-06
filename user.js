@@ -53,9 +53,8 @@ function User() {
                         return arr;
                     }
 
-
                     for(var i = 0; i < result[0].length; i++){
-                        jsonQuestionObject.push({type : result[0][i].JoinType,questionId : result[0][i].QuestionId, question : result[0][i].Question, choiceType : result[0][i].ChoiceType, options : result[0][i].Options, additionalQuestion : result[0][i].AdditionalQuestion});
+                        jsonQuestionObject.push({type : result[0][i].JoinType, questionId : result[0][i].QuestionId, question : result[0][i].Question, choiceType : result[0][i].ChoiceType, options : result[0][i].Options, additionalQuestion : result[0][i].AdditionalQuestion});
                     }
 
                     for(var i = 0; i < result[0].length; i++){
@@ -63,8 +62,8 @@ function User() {
                     }
 
                     //var json = _.uniq(jsonObject);
-                    console.log(jsonObject.length);
-                    console.log(jsonObject);
+                    // console.log(jsonObject.length);
+                    // console.log(jsonObject);
                     var json = [];
                     for (var i = 0; i < jsonObject.length; i++){
                         if(json.indexOf(jsonObject[i]) === -1){
