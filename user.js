@@ -34,7 +34,7 @@ function User() {
                     var jsonQuestionObject = [];
                     var jsonObject = [];
                     //var types = result.filter((x, i, a) => a.indexOf(x) == i);
-
+                    JSON.stringify(result);
                     for(var i = 0; i < result.length; i++){
                         jsonQuestionObject.push({questionId : result[i].QuestionId});
                         jsonQuestionObject.push({question : result[i].Question});
