@@ -49,7 +49,7 @@ function User() {
                     //     jsonObject.push({type: result.})
                     // }
 
-                    res.json(result);
+                    res.json(result[0]);
                     //res.send(JSON.stringify(jsonQuestionObject));
                 }else{
                     res.send({'status': 'Couldn\'t get the questions'});
