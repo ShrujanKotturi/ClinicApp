@@ -29,8 +29,9 @@ module.exports = {
         app.get('/GetQuestions', function (req, res){
            user.GetQuestions(req, res);
         });
-        app.post('/update/', function (req, res){
-            actions.post(req.body, res);
+
+        app.post('/PostResponses/', function (req, res){
+            user.PostResponse(req.body, res);
         });
     }
 };

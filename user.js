@@ -33,14 +33,16 @@ function User() {
                 }else if(result.length != 0){
                     var jsonQuestionObject = [];
                     var jsonObject = [];
-                    //var types = result.filter((x, i, a) => a.indexOf(x) == i);
+                    var duplicateResult = result[0];
+                    //var types = result[0].filter((x, i, a) => a.indexOf(x) == i);
 
                     for(var i = 0; i < result[0].length; i++){
-                        jsonQuestionObject.push({questionId : result[0][i].QuestionId, question : result[0][i].Question, choiceType : result[0][i].ChoiceType, options : result[0][i].Options, additionalQuestion : result[0][i].AdditionalQuestion});
+                        jsonQuestionObject.push({type : result[0][i].JoinType,questionId : result[0][i].QuestionId, question : result[0][i].Question, choiceType : result[0][i].ChoiceType, options : result[0][i].Options, additionalQuestion : result[0][i].AdditionalQuestion});
                     }
 
                     for(var i = 0; i < result[0].length; i++){
-                        jsonObject.push({type: result[0][i].Type, startingQuestion : result[0][i].StartingQuestion,questions: jsonQuestionObject});
+                            if(!jsonObject.contains(result[0][i].Type))
+                                jsonObject.push({type: result[0][i].Type, startingQuestion : result[0][i].StartingQuestion});
                     }
 
                     //res.json(result[0]);
@@ -52,54 +54,19 @@ function User() {
         });
     };
 
-
-    this.get = function (res) {
+    this.PostResponse = function (req, res){
         connection.acquire(function (err, con) {
-            var sql = 'SELECT * FROM data';
-            console.log("SQL : " + sql);
-            con.query(sql, function (err, result) {
-                con.release();
-                if(err){
-                    console.error(err);
-                    return;
-                }                if(result.length != 0){
-                    res.send(result);
-                }
-                else{
-                    res.send({'status' : 'No Result'});
-                }
-                console.log(statement.sql);
-            });
-
+          var sql = con.query('INSERT INTO UserResponse SET UserId = ?, Answers = ?', [req.userid, req.response], function (err, result) {
+              con.release();
+              console.log('PostResponse :' +sql.sql);
+              if(err){
+                  console.error(err);
+                  res.send({'status': 'Problem posting messages, check log for further assistance'});
+              }else {
+                  res.send({'status' : 'Posted Successfully'});
+              }
+          });
         });
-    };
-
-    this.post = function (point, res){
-        connection.acquire(function (err, con) {
-                if ((typeof(point.id) != 'undefined' && point.id != null) && (typeof(point.sales) != 'undefined' && point.sales != null) && (typeof(point.cost) != 'undefined' && point.cost != null)) {
-                    var statement = con.query('update data set cost = ?, sales = ? where id = ?', [point.cost, point.sales, point.id], function (err, result) {
-                        con.release();
-                        if (err) {
-                            res.send({'status': 'Error', 'message': 'Unable to store new value'});
-                            console.error(err);
-                            return;
-                        }
-                        if (result.length != 0) {
-                            res.send({'status': 'Success'});
-                        }
-                        else {
-                            res.send({'status': 'No Result'});
-                        }
-                        console.log(statement.sql);
-                    });
-
-                }else{
-                    res.send({'status': 'Error', 'message': 'Unable to store new value'});
-                }
-            }
-        );
-
-    };
-
+    }
 }
 module.exports = new User();
