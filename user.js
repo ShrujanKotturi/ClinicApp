@@ -62,7 +62,13 @@ function User() {
                         jsonObject.push({type: result[0][i].Type, startingQuestion : result[0][i].StartingQuestion});
                     }
 
-                    var json = _.uniq(jsonObject);
+                    //var json = _.uniq(jsonObject);
+                    var json = [];
+                    for (var i = 0; i < jsonObject.length; i++){
+                        if(json.indexOf(jsonObject[i].type) === -1){
+                            json.push(jsonObject[i]);
+                        }
+                    }
 
                     //res.json(result[0]);
                     res.send(json);
