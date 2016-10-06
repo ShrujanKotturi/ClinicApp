@@ -49,8 +49,8 @@ function User() {
                     //     jsonObject.push({type: result.})
                     // }
 
-                    //res.send(result);
-                    res.send(JSON.stringify(jsonQuestionObject));
+                    res.send(result);
+                    //res.send(JSON.stringify(jsonQuestionObject));
                 }else{
                     res.send({'status': 'Couldn\'t get the questions'});
                 }
