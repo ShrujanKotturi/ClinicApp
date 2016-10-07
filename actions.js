@@ -58,7 +58,7 @@ function Admin() {
 
     this.GetUserResponse = function (req, res){
       connection.acquire(function (err, con){
-        var sql = con.query('',[req.query.UserId], function (err, result) {
+        var sql = con.query('CALL sp_getUserResponse(?)' ,[req.query.UserId], function (err, result) {
             con.release();
             if(err){
                 console.error(err);
