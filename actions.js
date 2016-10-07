@@ -63,8 +63,10 @@ function Admin() {
             if(err){
                 console.error(err);
                 res.send({'status': 'The user didn\'t record any response'});
+            }else if (result[0].length != 0){
+                res.send(result[0]);
             }else{
-                res.send(result);
+                res.send({'status': 'The user didn\'t record any response'});
             }
             console.log('GetUserResponse : ' + sql.sql);
         });
