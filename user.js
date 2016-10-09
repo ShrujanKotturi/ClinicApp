@@ -1,8 +1,6 @@
 var connection = require('./connection');
-var _ = require('underscore');
 
 function User() {
-
     //User
     this.UserLogin = function (req, res){
         connection.acquire(function (err, con){
@@ -31,49 +29,46 @@ function User() {
                     console.error(err);
                     res.send({'status' : 'Error getting the questions'});
                 }else if(result.length != 0){
-                    var jsonQuestionObject = [];
+                    var jsonGeneralObject = [];
+                    var jsonMedicationObject = [];
+                    var jsonDietObject = [];
+                    var jsonPhysicalObject = [];
+                    var jsonSmokingObject = [];
+                    var jsonWeightObject = [];
+                    var jsonNoneObject = [];
+
                     var jsonObject = [];
-                    //var duplicateResult = new LINQ(result[0]);
-                    //var types = result[0].filter((x, i, a) => a.indexOf(x) == i);
+                    var type;
 
-                    Array.prototype.contains = function(v) {
-                        for(var i = 0; i < this.length; i++) {
-                            if(this[i] === v) return true;
-                        }
-                        return false;
-                    };
+                    // for(var i = 0; i < result[0].length; i++){
+                    //     type = result[0][i].JoinType;
+                    //     if(type === "General")
+                    //         jsonGeneralObject.push({type : type, questionId : result[0][i].QuestionId, question : result[0][i].Question, choiceType : result[0][i].ChoiceType, options : result[0][i].Options, additionalQuestion : result[0][i].AdditionalQuestion});
+                    //     else if(type === "Medication Usage")
+                    //         jsonMedicationObject.push({type : type, questionId : result[0][i].QuestionId, question : result[0][i].Question, choiceType : result[0][i].ChoiceType, options : result[0][i].Options, additionalQuestion : result[0][i].AdditionalQuestion});
+                    //      else if(type === "Diet")
+                    //         jsonDietObject.push({type : type, questionId : result[0][i].QuestionId, question : result[0][i].Question, choiceType : result[0][i].ChoiceType, options : result[0][i].Options, additionalQuestion : result[0][i].AdditionalQuestion});
+                    //     else if(type === "Physical Activity")
+                    //         jsonPhysicalObject.push({type : type, questionId : result[0][i].QuestionId, question : result[0][i].Question, choiceType : result[0][i].ChoiceType, options : result[0][i].Options, additionalQuestion : result[0][i].AdditionalQuestion});
+                    //     else if(type === "Smoking")
+                    //         jsonSmokingObject.push({type : type, questionId : result[0][i].QuestionId, question : result[0][i].Question, choiceType : result[0][i].ChoiceType, options : result[0][i].Options, additionalQuestion : result[0][i].AdditionalQuestion});
+                    //     else if(type === "Weight management")
+                    //         jsonWeightObject.push({type : type, questionId : result[0][i].QuestionId, question : result[0][i].Question, choiceType : result[0][i].ChoiceType, options : result[0][i].Options, additionalQuestion : result[0][i].AdditionalQuestion});
+                    //     else if(type === "None")
+                    //         jsonNoneObject.push({type : type, questionId : result[0][i].QuestionId, question : result[0][i].Question, choiceType : result[0][i].ChoiceType, options : result[0][i].Options, additionalQuestion : result[0][i].AdditionalQuestion});
+                    // }
 
-                    Array.prototype.unique = function() {
-                        var arr = [];
-                        for(var i = 0; i < this.length; i++) {
-                            if(!arr.contains(this[i])) {
-                                arr.push(this[i]);
-                            }
-                        }
-                        return arr;
-                    }
+                    // for(var i = 0; i < result[0].length; i++){
+                    //     jsonObject.push({type: result[0][i].Type, startingQuestion : result[0][i].StartingQuestion});
+                    // }
+                    //
+                    // for(var i = 0; i < result[0].length; i++){
+                    //     jsonObject.push({{type : result[0][i].JoinType, questionId : result[0][i].QuestionId, question : result[0][i].Question, choiceType : result[0][i].ChoiceType, options : result[0][i].Options, additionalQuestion : result[0][i].AdditionalQuestion});
+                    // }
+                    
+                    res.json(result[0]);
 
-                    for(var i = 0; i < result[0].length; i++){
-                        jsonQuestionObject.push({type : result[0][i].JoinType, questionId : result[0][i].QuestionId, question : result[0][i].Question, choiceType : result[0][i].ChoiceType, options : result[0][i].Options, additionalQuestion : result[0][i].AdditionalQuestion});
-                    }
-
-                    for(var i = 0; i < result[0].length; i++){
-                        jsonObject.push({type: result[0][i].Type, startingQuestion : result[0][i].StartingQuestion});
-                    }
-
-                    //var json = _.uniq(jsonObject);
-                    // console.log(jsonObject.length);
-                    // console.log(jsonObject);
-                    var json = [];
-                    for (var i = 0; i < jsonObject.length; i++){
-                        if(json.indexOf(jsonObject[i]) === -1){
-                            json.push(jsonObject[i]);
-                        }
-                    }
-
-                    //res.json(result[0]);
-                    //res.send(json);
-                    res.send(jsonQuestionObject);
+                    //res.send(jsonQuestionObject);
                 }else{
                     res.send({'status': 'Couldn\'t get the questions'});
                 }
