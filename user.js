@@ -1,4 +1,7 @@
 var connection = require('./connection');
+var cryptojs = require('crypto-js');
+var jwt = require('jsonwebtoken');
+
 
 function User() {
     //User
@@ -12,7 +15,20 @@ function User() {
                    res.send({'status' : 'Failed to get user with the provided details'});
                }
                else if(result.length != 0) {
-                   res.send({'status': 'Successfully logged in'});
+                   try {
+                       var stringData = JSON.stringify(result[0]);
+                       var encryptedData = cryptojs.AES.encrypt(stringData, 'abc123!@#').toString();
+                       var token = jwt.sign({
+                           token : encryptedData
+                       }, 'qwerty098');
+                       if(token)
+                            res.header('Auth', token).send({'status': 'Successfully logged in', 'token' : token});
+                       else
+                           res.status(401).send();
+                   }catch(err  ){
+                       console.log(err);
+                       res.send();
+                   }
                }else{
                    res.send({'status' : 'Problem logging in, kindly check again'});
                }
@@ -89,6 +105,7 @@ function User() {
               }
           });
         });
-    }
+    };
+
 }
 module.exports = new User();

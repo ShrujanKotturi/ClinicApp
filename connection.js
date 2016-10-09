@@ -9,6 +9,8 @@ function Connection() {
             host: 'localhost',
             user: 'root',
             password: 'password',
+            //password: '',
+            //database: 'clinicapplication',
             database: 'ClinicApplication',
             multipleStatements : true
         });
