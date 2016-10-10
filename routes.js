@@ -1,6 +1,6 @@
 var actions = require('./actions');
 var user = require('./user');
-//var util = require('util');
+var connection = require('./connection');
 var cryptojs = require('crypto-js');
 var jwt = require('jsonwebtoken');
 
@@ -29,7 +29,7 @@ module.exports = {
         });
 
         app.get('/GetQuestions', requireAuthentication , function (req, res){
-           user.GetQuestions(req, res);
+            user.GetQuestions(req, res);
         });
 
         app.post('/PostResponses', requireAuthentication, function (req, res){
@@ -42,8 +42,8 @@ function requireAuthentication (req, res, next) {
     var token = req.get('Auth');
 
     Authenticate(token).then(function (tokenData){
-        //req.session.userid = tokenData.UserId;
         res.locals.user = tokenData.UserId;
+        console.log("auth token id " + res.locals.user);
         next();
     }, function () {
         console.log(err);
@@ -58,9 +58,41 @@ function Authenticate(token){
             var decodedJWT = jwt.verify(token, 'qwerty098');
             var bytes = cryptojs.AES.decrypt(decodedJWT.token, 'abc123!@#');
             var tokenData = JSON.parse(bytes.toString(cryptojs.enc.Utf8));
+            console.log("auth token id " + tokenData);
             resolve(tokenData);
         }catch(err){
             reject();
         }
+    });
+}
+
+function CheckResponses(res, next){
+    connection.acquire(function (err, con) {
+
+        var sql = con.query('SELECT * FROM UserResponse WHERE UserId = ?', [res.locals.user], function (err, result) {
+            con.release();
+            console.log('CheckResponses : ' +sql.sql);
+            if(err){
+                console.error(err);
+                res.send({'status': 'Problem posting messages, check log for further assistance'});
+            }else if(result.length === 0){
+                res.send({'status' : 'You already submitted your responses'});
+            }else{
+                var sql = con.query('SELECT * FROM UserResponse WHERE UserId = ?', [res.locals.user], function (err, result) {
+                    con.release();
+                    console.log('CheckResponses : ' +sql.sql);
+                    if(err){
+                        console.error(err);
+                        res.send({'status': 'Problem posting messages, check log for further assistance'});
+                    }else if(result.length != 0){
+                        res.send({'status' : 'You already submitted your responses'});
+                    }else{
+                        next();
+                    }
+                });
+            }
+        });
+
+
     });
 }

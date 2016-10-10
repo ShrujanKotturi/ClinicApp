@@ -38,64 +38,73 @@ function User() {
 
     this.GetQuestions = function (req, res){
         connection.acquire(function (err, con){
-           var sql = con.query('CALL sp_getAllQuestions()', function (err, result) {
-                con.release();
-                console.log('GetQuestions : ' + sql.sql);
+            var sql1 = con.query('SELECT * FROM UserResponse WHERE UserId = ?', [res.locals.user], function (err, result) {
+                console.log('CheckResponses : ' + sql1.sql);
                 if(err){
                     console.error(err);
-                    res.send({'status' : 'Error getting the questions'});
+                    res.send({'status': 'Problem posting messages, check log for further assistance'});
                 }else if(result.length != 0){
-                    var jsonGeneralObject = [];
-                    var jsonMedicationObject = [];
-                    var jsonDietObject = [];
-                    var jsonPhysicalObject = [];
-                    var jsonSmokingObject = [];
-                    var jsonWeightObject = [];
-                    var jsonNoneObject = [];
+                    res.send({'status' : 'You already submitted your responses'});
+                }else {
+                    var sql = con.query('CALL sp_getAllQuestions(' + [res.locals.user] + ')', function (err, result) {
 
-                    var jsonObject = [];
-                    var type;
+                        console.log('GetQuestions : ' + sql.sql);
+                        if (err) {
+                            console.error(err);
+                            res.send({'status': 'Error getting the questions'});
+                        } else if (result.length != 0) {
+                            var jsonGeneralObject = [];
+                            var jsonMedicationObject = [];
+                            var jsonDietObject = [];
+                            var jsonPhysicalObject = [];
+                            var jsonSmokingObject = [];
+                            var jsonWeightObject = [];
+                            var jsonNoneObject = [];
 
-                    // for(var i = 0; i < result[0].length; i++){
-                    //     type = result[0][i].JoinType;
-                    //     if(type === "General")
-                    //         jsonGeneralObject.push({type : type, questionId : result[0][i].QuestionId, question : result[0][i].Question, choiceType : result[0][i].ChoiceType, options : result[0][i].Options, additionalQuestion : result[0][i].AdditionalQuestion});
-                    //     else if(type === "Medication Usage")
-                    //         jsonMedicationObject.push({type : type, questionId : result[0][i].QuestionId, question : result[0][i].Question, choiceType : result[0][i].ChoiceType, options : result[0][i].Options, additionalQuestion : result[0][i].AdditionalQuestion});
-                    //      else if(type === "Diet")
-                    //         jsonDietObject.push({type : type, questionId : result[0][i].QuestionId, question : result[0][i].Question, choiceType : result[0][i].ChoiceType, options : result[0][i].Options, additionalQuestion : result[0][i].AdditionalQuestion});
-                    //     else if(type === "Physical Activity")
-                    //         jsonPhysicalObject.push({type : type, questionId : result[0][i].QuestionId, question : result[0][i].Question, choiceType : result[0][i].ChoiceType, options : result[0][i].Options, additionalQuestion : result[0][i].AdditionalQuestion});
-                    //     else if(type === "Smoking")
-                    //         jsonSmokingObject.push({type : type, questionId : result[0][i].QuestionId, question : result[0][i].Question, choiceType : result[0][i].ChoiceType, options : result[0][i].Options, additionalQuestion : result[0][i].AdditionalQuestion});
-                    //     else if(type === "Weight management")
-                    //         jsonWeightObject.push({type : type, questionId : result[0][i].QuestionId, question : result[0][i].Question, choiceType : result[0][i].ChoiceType, options : result[0][i].Options, additionalQuestion : result[0][i].AdditionalQuestion});
-                    //     else if(type === "None")
-                    //         jsonNoneObject.push({type : type, questionId : result[0][i].QuestionId, question : result[0][i].Question, choiceType : result[0][i].ChoiceType, options : result[0][i].Options, additionalQuestion : result[0][i].AdditionalQuestion});
-                    // }
+                            var jsonObject = [];
+                            var type;
 
-                    // for(var i = 0; i < result[0].length; i++){
-                    //     jsonObject.push({type: result[0][i].Type, startingQuestion : result[0][i].StartingQuestion});
-                    // }
-                    //
-                    // for(var i = 0; i < result[0].length; i++){
-                    //     jsonObject.push({{type : result[0][i].JoinType, questionId : result[0][i].QuestionId, question : result[0][i].Question, choiceType : result[0][i].ChoiceType, options : result[0][i].Options, additionalQuestion : result[0][i].AdditionalQuestion});
-                    // }
-                    
-                    res.json(result[0]);
+                            // for(var i = 0; i < result[0].length; i++){
+                            //     type = result[0][i].JoinType;
+                            //     if(type === "General")
+                            //         jsonGeneralObject.push({type : type, questionId : result[0][i].QuestionId, question : result[0][i].Question, choiceType : result[0][i].ChoiceType, options : result[0][i].Options, additionalQuestion : result[0][i].AdditionalQuestion});
+                            //     else if(type === "Medication Usage")
+                            //         jsonMedicationObject.push({type : type, questionId : result[0][i].QuestionId, question : result[0][i].Question, choiceType : result[0][i].ChoiceType, options : result[0][i].Options, additionalQuestion : result[0][i].AdditionalQuestion});
+                            //      else if(type === "Diet")
+                            //         jsonDietObject.push({type : type, questionId : result[0][i].QuestionId, question : result[0][i].Question, choiceType : result[0][i].ChoiceType, options : result[0][i].Options, additionalQuestion : result[0][i].AdditionalQuestion});
+                            //     else if(type === "Physical Activity")
+                            //         jsonPhysicalObject.push({type : type, questionId : result[0][i].QuestionId, question : result[0][i].Question, choiceType : result[0][i].ChoiceType, options : result[0][i].Options, additionalQuestion : result[0][i].AdditionalQuestion});
+                            //     else if(type === "Smoking")
+                            //         jsonSmokingObject.push({type : type, questionId : result[0][i].QuestionId, question : result[0][i].Question, choiceType : result[0][i].ChoiceType, options : result[0][i].Options, additionalQuestion : result[0][i].AdditionalQuestion});
+                            //     else if(type === "Weight management")
+                            //         jsonWeightObject.push({type : type, questionId : result[0][i].QuestionId, question : result[0][i].Question, choiceType : result[0][i].ChoiceType, options : result[0][i].Options, additionalQuestion : result[0][i].AdditionalQuestion});
+                            //     else if(type === "None")
+                            //         jsonNoneObject.push({type : type, questionId : result[0][i].QuestionId, question : result[0][i].Question, choiceType : result[0][i].ChoiceType, options : result[0][i].Options, additionalQuestion : result[0][i].AdditionalQuestion});
+                            // }
 
-                    //res.send(jsonQuestionObject);
-                }else{
-                    res.send({'status': 'Couldn\'t get the questions'});
+                            // for(var i = 0; i < result[0].length; i++){
+                            //     jsonObject.push({type: result[0][i].Type, startingQuestion : result[0][i].StartingQuestion});
+                            // }
+                            //
+                            // for(var i = 0; i < result[0].length; i++){
+                            //     jsonObject.push({{type : result[0][i].JoinType, questionId : result[0][i].QuestionId, question : result[0][i].Question, choiceType : result[0][i].ChoiceType, options : result[0][i].Options, additionalQuestion : result[0][i].AdditionalQuestion});
+                            // }
+
+                            res.json(result[0]);
+
+                            //res.send(jsonQuestionObject);
+                        } else {
+                            res.send({'status': 'Couldn\'t get the questions'});
+                        }
+                    });
                 }
-           });
+                con.release();
+            });
         });
     };
 
     this.PostResponse = function (req, res){
         connection.acquire(function (err, con) {
-          console.log(req);
-          console.log(req.session);
           var sql = con.query('INSERT INTO UserResponse SET UserId = ?, Answers = ?', [res.locals.user, req.response], function (err, result) {
               con.release();
               console.log('PostResponse : ' +sql.sql);
@@ -108,6 +117,7 @@ function User() {
           });
         });
     };
+
 
 }
 module.exports = new User();
