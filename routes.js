@@ -41,17 +41,26 @@ module.exports = {
 function requireAuthentication (req, res, next) {
     var token = req.get('Auth');
 
-    return new Promise(function(){
+    Authenticate(token).then(function (tokenData){
+        //req.session.userid = tokenData.UserId;
+        res.locals.user = tokenData.UserId;
+        next();
+    }, function () {
+        console.log(err);
+        res.status(401).send();
+    });
+
+}
+
+function Authenticate(token){
+    return new Promise(function(resolve, reject){
         try{
             var decodedJWT = jwt.verify(token, 'qwerty098');
             var bytes = cryptojs.AES.decrypt(decodedJWT.token, 'abc123!@#');
             var tokenData = JSON.parse(bytes.toString(cryptojs.enc.Utf8));
-            console.log(tokenData.UserId);
-            req.userid = tokenData.UserId;
-            next();
+            resolve(tokenData);
         }catch(err){
-            console.log(err);
-            res.status(401).send();
+            reject();
         }
     });
 }

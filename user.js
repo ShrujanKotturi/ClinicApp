@@ -94,7 +94,9 @@ function User() {
 
     this.PostResponse = function (req, res){
         connection.acquire(function (err, con) {
-          var sql = con.query('INSERT INTO UserResponse SET UserId = ?, Answers = ?', [req.userid, req.response], function (err, result) {
+          console.log(req);
+          console.log(req.session);
+          var sql = con.query('INSERT INTO UserResponse SET UserId = ?, Answers = ?', [res.locals.user, req.response], function (err, result) {
               con.release();
               console.log('PostResponse : ' +sql.sql);
               if(err){
