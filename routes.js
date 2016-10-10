@@ -66,33 +66,3 @@ function Authenticate(token){
     });
 }
 
-function CheckResponses(res, next){
-    connection.acquire(function (err, con) {
-
-        var sql = con.query('SELECT * FROM UserResponse WHERE UserId = ?', [res.locals.user], function (err, result) {
-            con.release();
-            console.log('CheckResponses : ' +sql.sql);
-            if(err){
-                console.error(err);
-                res.send({'status': 'Problem posting messages, check log for further assistance'});
-            }else if(result.length === 0){
-                res.send({'status' : 'You already submitted your responses'});
-            }else{
-                var sql = con.query('SELECT * FROM UserResponse WHERE UserId = ?', [res.locals.user], function (err, result) {
-                    con.release();
-                    console.log('CheckResponses : ' +sql.sql);
-                    if(err){
-                        console.error(err);
-                        res.send({'status': 'Problem posting messages, check log for further assistance'});
-                    }else if(result.length != 0){
-                        res.send({'status' : 'You already submitted your responses'});
-                    }else{
-                        next();
-                    }
-                });
-            }
-        });
-
-
-    });
-}

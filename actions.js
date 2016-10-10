@@ -23,16 +23,27 @@ function Admin() {
 
     this.CreateUser = function (req, res){
       connection.acquire(function (err, con){
-        var sql = con.query('INSERT INTO Users SET UserName = ?, UserPassword = ?', [req.username, req.password], function (err,result) {
-            con.release();
-           if(err){
-               console.error(err);
-               res.send({'status' : 'Failed to create a user'});
-           } else{
-               res.send({'status' : 'User created successfully'});
-           }
-           console.log("UserCreated : " + sql.sql);
-        });
+          var sql1 = con.query('SELECT * FROM Users WHERE UserName = ? AND UserPassword = ?', [req.username, req.password], function (err, result) {
+              console.log('CheckUserExists : ' + sql1.sql);
+              if (err) {
+                  console.error(err);
+                  res.send({'status': 'Failed to get user with the provided details'});
+              }
+              else if (result.length != 0) {
+                  res.send({'status': 'User already exists, Try creating using another credentials'});
+              }else{
+                  var sql = con.query('INSERT INTO Users SET UserName = ?, UserPassword = ?', [req.username, req.password], function (err, result) {
+                      con.release();
+                      if (err) {
+                          console.error(err);
+                          res.send({'status': 'Failed to create a user'});
+                      } else {
+                          res.send({'status': 'User created successfully'});
+                      }
+                      console.log("UserCreated : " + sql.sql);
+                  });
+              }
+          })
       });
     };
 
