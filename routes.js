@@ -47,7 +47,7 @@ function requireAuthentication (req, res, next) {
             var bytes = cryptojs.AES.decrypt(decodedJWT.token, 'abc123!@#');
             var tokenData = JSON.parse(bytes.toString(cryptojs.enc.Utf8));
             console.log(tokenData.UserId);
-            res.userid = tokenData.UserId;
+            req.userid = tokenData.UserId;
             next();
         }catch(err){
             console.log(err);
