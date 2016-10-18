@@ -4,6 +4,7 @@ var connection = require('./connection');
 var cryptojs = require('crypto-js');
 var jwt = require('jsonwebtoken');
 var middleware = require('./middleware');
+var util = require('util');
 
 module.exports = {
     configure: function(app) {
@@ -57,7 +58,7 @@ function requireAuthentication (req, res, next) {
 
     Authenticate(token).then(function (tokenData){
         res.locals.user = tokenData.UserId;
-        console.log("auth token id " + res.locals.user);
+        console.log("auth token id " + util.inspect(res.locals.user));
         next();
     }, function () {
         console.log(err);

@@ -11,7 +11,7 @@ function MiddleWare(){
 
         Authenticate(token).then(function (tokenData){
             res.locals.user = tokenData.UserId;
-            console.log("auth token id " + res.locals.user);
+            console.log("auth token id " + util.inspect(res.locals.user));
             next();
         }, function () {
             console.log(err);

@@ -3,7 +3,7 @@ var cryptojs = require('crypto-js');
 var jwt = require('jsonwebtoken');
 var FCM = require('fcm-node');
 var util = require('util');
-var SERVER_API_KEY = 'AIzaSyCBzbxcsX4AicGrMhsK5CLOe2yNz-j4Sac';
+var SERVER_API_KEY = 'AIzaSyCnk1CzkySQolNRbzdwqvFhPutctzVvQjQ';
 var fcmCli = new FCM(SERVER_API_KEY);
 
 
@@ -81,7 +81,17 @@ function Admin() {
                                            console.error(err)
                                        }else{
                                            console.log(res2);
-                                           res.status(200).send({status : 0, message: 'Message sent to the user' });
+                                           var sql3 = con.query('UPDATE Devices SET Requested = false WHERE DeviceId = ?', [req.deviceid], function (err, result4) {
+                                               console.log('Update Device Id : ' + sql3.sql);
+                                                if(err){
+                                                    console.error(err);
+                                                    res.status(401).send({'status':'Unable to update the request'});
+                                                }else{
+                                                    res.status(200).send({status : 0, message: 'Message sent to the user' });
+                                                }
+
+                                           });
+
                                        }
                                    });
                               }
