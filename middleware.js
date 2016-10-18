@@ -48,9 +48,11 @@ function MiddleWare(){
         var token = req.get('Auth');
 
         Authenticate(token).then(function (){
+            console.log("Admin Authenticated");
             next();
         }, function () {
             console.log(err);
+            console.log("Couldn't Authenticate the Admin");
             res.status(401).send();
         });
     };

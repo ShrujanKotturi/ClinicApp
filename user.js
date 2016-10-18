@@ -137,7 +137,6 @@ function User() {
 
             console.log('deviceid: ' + req.deviceid);
             console.log('requested: '+ true);
-            console.log('tokenid: ' + req.tokenid);
 
             var sql1 = con.query('SELECT * FROM Devices WHERE DeviceId = ?', [req.deviceid], function (err, result) {
                 console.log('DeviceCheck : ' + sql1.sql);
