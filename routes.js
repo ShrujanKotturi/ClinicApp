@@ -3,7 +3,6 @@ var user = require('./user');
 var connection = require('./connection');
 var cryptojs = require('crypto-js');
 var jwt = require('jsonwebtoken');
-var middleware = require('./middleware');
 var util = require('util');
 
 module.exports = {

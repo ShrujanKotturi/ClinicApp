@@ -11,7 +11,7 @@ function User() {
                 console.log('UserLogin : ' + sql.sql);
                 if (err) {
                     console.error(err);
-                    res.status(401).send({'status': 'Failed to get user with the provided details'});
+                    res.status(400).send({'status': 'Failed to get user with the provided details'});
                 }
                 else if (result.length != 0) {
                     try {
@@ -19,7 +19,7 @@ function User() {
                             console.log('CheckResponses : ' + sql1.sql);
                             if (err) {
                                 console.error(err);
-                                res.status(401).send({'status': 'Problem logging in , check log for further assistance'});
+                                res.status(400).send({'status': 'Problem logging in , check log for further assistance'});
                             } else if (result2.length != 0) {
                                 res.status(200).send({'status': 'You have already taken the survey. Thanks again'});
                             } else {
@@ -34,16 +34,16 @@ function User() {
                                         'token': token
                                     });
                                 else
-                                    res.status(401).send();
+                                    res.status(400).send();
                             }
                         });
 
                     } catch (err) {
                         console.log(err);
-                        res.status(401).send();
+                        res.status(400).send();
                     }
                 }else {
-                    res.status(401).send({'status': 'Problem logging in, kindly check again'});
+                    res.status(200).send({'status': 'Problem logging in, kindly check username and password'});
                 }
 
                 con.release();
@@ -58,20 +58,20 @@ function User() {
                 console.log('CheckResponses : ' + sql1.sql);
                 if (err) {
                     console.error(err);
-                    res.status(401).send({'status': 'Problem posting messages, check log for further assistance'});
+                    res.status(400).send({'status': 'Problem posting messages, check log for further assistance'});
                 } else if (result.length != 0) {
                     res.status(200).send({'status': 'You already submitted your responses'});
                 } else {
-                    var sql = con.query('CALL sp_getAllQuestions()', function (err, result) {
+                    var sql = con.query('CALL sp_getAllQuestions()', function (err, result2) {
 
                         console.log('GetQuestions : ' + sql.sql);
                         if (err) {
                             console.error(err);
-                            res.status(401).send({'status': 'Error getting the questions'});
-                        } else if (result.length != 0) {
+                            res.status(400).send({'status': 'Error getting the questions'});
+                        } else if (result2.length != 0) {
                             res.status(200).json(result[0]);
                         } else {
-                            res.status(401).send({'status': 'Couldn\'t get the questions'});
+                            res.status(200).send({'status': 'Couldn\'t get the questions'});
                         }
                     });
                 }
@@ -86,7 +86,7 @@ function User() {
                 console.log('CheckResponses : ' + sql1.sql);
                 if (err) {
                     console.error(err);
-                    res.status(401).send({'status': 'Problem posting messages, check log for further assistance'});
+                    res.status(400).send({'status': 'Problem posting messages, check log for further assistance'});
                 } else if (result.length != 0) {
                     res.status(200).send({'status': 'You already submitted your responses'});
                 } else {
@@ -95,7 +95,7 @@ function User() {
                         console.log('PostResponse : ' + sql.sql);
                         if (err) {
                             console.error(err);
-                            res.status(401).send({'status': 'Problem posting messages, check log for further assistance'});
+                            res.status(400).send({'status': 'Problem posting messages, check log for further assistance'});
                         } else {
                             res.status(200).send({'status': 'Posted Successfully'});
                         }
@@ -121,6 +121,7 @@ function User() {
             var sql = con.query('INSERT INTO Devices SET ?', devices, function (err, result) {
                 if(err){
                     console.error(err);
+                    res.status(400).send({'status' : 'Error in registering the device'});
                 }else{
                     console.log(result);
                     res.status(200).send({status: 0, message: 'Requested for registration'});
@@ -142,19 +143,19 @@ function User() {
                 console.log('DeviceCheck : ' + sql1.sql);
                 if (err) {
                     console.error(err);
-                    res.status(401).send({'status': 'Problem Registering, check log for further assistance'});
+                    res.status(400).send({'status': 'Problem Registering, check log for further assistance'});
                 } else if(result.length != 0) {
-                    var sql = con.query('UPDATE Devices SET Requested = ? WHERE DeviceId = ? ', [true, req.deviceid], function (err, result) {
+                    var sql = con.query('UPDATE Devices SET Requested = ? WHERE DeviceId = ? ', [true, req.deviceid], function (err, result2) {
                         if(err){
                             console.error(err);
+                            res.status(400).send({'status' : 'Error in Requesting credentials'});
                         }else{
-                            console.log(result);
                             res.status(200).send({status: 0, message: 'Your request has been sent to the admin. Please wait till you get Notification of your credentials'});
                         }
                         console.log('Requested Credentials : ' + sql.sql);
                     });
                 } else{
-                    res.status(401).send({'status' : 'Try reinstalling the app'});
+                    res.status(200).send({'status' : 'Try reinstalling the app'});
                 }
             });
 
