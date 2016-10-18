@@ -11,17 +11,17 @@ function User() {
                 console.log('UserLogin : ' + sql.sql);
                 if (err) {
                     console.error(err);
-                    res.send({'status': 'Failed to get user with the provided details'});
+                    res.status(401).send({'status': 'Failed to get user with the provided details'});
                 }
                 else if (result.length != 0) {
                     try {
-                        var sql1 = con.query('SELECT * FROM UserResponse WHERE UserId = ?', [result[0].UserId], function (err, result) {
+                        var sql1 = con.query('SELECT * FROM UserResponse WHERE UserId = ?', [result[0].UserId], function (err, result2) {
                             console.log('CheckResponses : ' + sql1.sql);
                             if (err) {
                                 console.error(err);
-                                res.send({'status': 'Problem logging in , check log for further assistance'});
-                            } else if (result.length != 0) {
-                                res.send({'status': 'You have already taken the survey. Thanks again'});
+                                res.status(401).send({'status': 'Problem logging in , check log for further assistance'});
+                            } else if (result2.length != 0) {
+                                res.status(200).send({'status': 'You have already taken the survey. Thanks again'});
                             } else {
                                 var stringData = JSON.stringify(result[0]);
                                 var encryptedData = cryptojs.AES.encrypt(stringData, 'abc123!@#').toString();
@@ -29,7 +29,7 @@ function User() {
                                     token: encryptedData
                                 }, 'qwerty098');
                                 if (token)
-                                    res.header('Auth', token).send({
+                                    res.header('Auth', token).status(200).send({
                                         'status': 'Successfully logged in',
                                         'token': token
                                     });
@@ -40,10 +40,10 @@ function User() {
 
                     } catch (err) {
                         console.log(err);
-                        res.send();
+                        res.status(401).send();
                     }
                 }else {
-                    res.send({'status': 'Problem logging in, kindly check again'});
+                    res.status(401).send({'status': 'Problem logging in, kindly check again'});
                 }
 
                 con.release();
@@ -53,96 +53,117 @@ function User() {
     };
 
     this.GetQuestions = function (req, res) {
-            connection.acquire(function (err, con) {
-                var sql1 = con.query('SELECT * FROM UserResponse WHERE UserId = ?', [res.locals.user], function (err, result) {
-                    console.log('CheckResponses : ' + sql1.sql);
-                    if (err) {
-                        console.error(err);
-                        res.send({'status': 'Problem posting messages, check log for further assistance'});
-                    } else if (result.length != 0) {
-                        res.send({'status': 'You already submitted your responses'});
-                    } else {
-                        var sql = con.query('CALL sp_getAllQuestions(' + [res.locals.user] + ')', function (err, result) {
+        connection.acquire(function (err, con) {
+            var sql1 = con.query('SELECT * FROM UserResponse WHERE UserId = ?', [res.locals.user], function (err, result) {
+                console.log('CheckResponses : ' + sql1.sql);
+                if (err) {
+                    console.error(err);
+                    res.status(401).send({'status': 'Problem posting messages, check log for further assistance'});
+                } else if (result.length != 0) {
+                    res.status(200).send({'status': 'You already submitted your responses'});
+                } else {
+                    var sql = con.query('CALL sp_getAllQuestions()', function (err, result) {
 
-                            console.log('GetQuestions : ' + sql.sql);
-                            if (err) {
-                                console.error(err);
-                                res.send({'status': 'Error getting the questions'});
-                            } else if (result.length != 0) {
-                                var jsonGeneralObject = [];
-                                var jsonMedicationObject = [];
-                                var jsonDietObject = [];
-                                var jsonPhysicalObject = [];
-                                var jsonSmokingObject = [];
-                                var jsonWeightObject = [];
-                                var jsonNoneObject = [];
-
-                                var jsonObject = [];
-                                var type;
-
-                                // for(var i = 0; i < result[0].length; i++){
-                                //     type = result[0][i].JoinType;
-                                //     if(type === "General")
-                                //         jsonGeneralObject.push({type : type, questionId : result[0][i].QuestionId, question : result[0][i].Question, choiceType : result[0][i].ChoiceType, options : result[0][i].Options, additionalQuestion : result[0][i].AdditionalQuestion});
-                                //     else if(type === "Medication Usage")
-                                //         jsonMedicationObject.push({type : type, questionId : result[0][i].QuestionId, question : result[0][i].Question, choiceType : result[0][i].ChoiceType, options : result[0][i].Options, additionalQuestion : result[0][i].AdditionalQuestion});
-                                //      else if(type === "Diet")
-                                //         jsonDietObject.push({type : type, questionId : result[0][i].QuestionId, question : result[0][i].Question, choiceType : result[0][i].ChoiceType, options : result[0][i].Options, additionalQuestion : result[0][i].AdditionalQuestion});
-                                //     else if(type === "Physical Activity")
-                                //         jsonPhysicalObject.push({type : type, questionId : result[0][i].QuestionId, question : result[0][i].Question, choiceType : result[0][i].ChoiceType, options : result[0][i].Options, additionalQuestion : result[0][i].AdditionalQuestion});
-                                //     else if(type === "Smoking")
-                                //         jsonSmokingObject.push({type : type, questionId : result[0][i].QuestionId, question : result[0][i].Question, choiceType : result[0][i].ChoiceType, options : result[0][i].Options, additionalQuestion : result[0][i].AdditionalQuestion});
-                                //     else if(type === "Weight management")
-                                //         jsonWeightObject.push({type : type, questionId : result[0][i].QuestionId, question : result[0][i].Question, choiceType : result[0][i].ChoiceType, options : result[0][i].Options, additionalQuestion : result[0][i].AdditionalQuestion});
-                                //     else if(type === "None")
-                                //         jsonNoneObject.push({type : type, questionId : result[0][i].QuestionId, question : result[0][i].Question, choiceType : result[0][i].ChoiceType, options : result[0][i].Options, additionalQuestion : result[0][i].AdditionalQuestion});
-                                // }
-
-                                // for(var i = 0; i < result[0].length; i++){
-                                //     jsonObject.push({type: result[0][i].Type, startingQuestion : result[0][i].StartingQuestion});
-                                // }
-                                //
-                                // for(var i = 0; i < result[0].length; i++){
-                                //     jsonObject.push({{type : result[0][i].JoinType, questionId : result[0][i].QuestionId, question : result[0][i].Question, choiceType : result[0][i].ChoiceType, options : result[0][i].Options, additionalQuestion : result[0][i].AdditionalQuestion});
-                                // }
-
-                                res.json(result[0]);
-
-                                //res.send(jsonQuestionObject);
-                            } else {
-                                res.send({'status': 'Couldn\'t get the questions'});
-                            }
-                        });
-                    }
-                    con.release();
-                });
+                        console.log('GetQuestions : ' + sql.sql);
+                        if (err) {
+                            console.error(err);
+                            res.status(401).send({'status': 'Error getting the questions'});
+                        } else if (result.length != 0) {
+                            res.status(200).json(result[0]);
+                        } else {
+                            res.status(401).send({'status': 'Couldn\'t get the questions'});
+                        }
+                    });
+                }
+                con.release();
             });
-        };
+        });
+    };
 
     this.PostResponse = function (req, res) {
-            connection.acquire(function (err, con) {
-                var sql1 = con.query('SELECT * FROM UserResponse WHERE UserId = ?', [res.locals.user], function (err, result) {
-                    console.log('CheckResponses : ' + sql1.sql);
-                    if (err) {
-                        console.error(err);
-                        res.send({'status': 'Problem posting messages, check log for further assistance'});
-                    } else if (result.length != 0) {
-                        res.send({'status': 'You already submitted your responses'});
-                    } else {
-                        var sql = con.query('INSERT INTO UserResponse SET UserId = ?, Answers = ?', [res.locals.user, req.response], function (err, result) {
-                            con.release();
-                            console.log('PostResponse : ' + sql.sql);
-                            if (err) {
-                                console.error(err);
-                                res.send({'status': 'Problem posting messages, check log for further assistance'});
-                            } else {
-                                res.send({'status': 'Posted Successfully'});
-                            }
-                        });
-                    }
-                });
+        connection.acquire(function (err, con) {
+            var sql1 = con.query('SELECT * FROM UserResponse WHERE UserId = ?', [res.locals.user], function (err, result) {
+                console.log('CheckResponses : ' + sql1.sql);
+                if (err) {
+                    console.error(err);
+                    res.status(401).send({'status': 'Problem posting messages, check log for further assistance'});
+                } else if (result.length != 0) {
+                    res.status(200).send({'status': 'You already submitted your responses'});
+                } else {
+                    var sql = con.query('INSERT INTO UserResponse SET UserId = ?, Answers = ?', [res.locals.user, req.response], function (err, result) {
+                        con.release();
+                        console.log('PostResponse : ' + sql.sql);
+                        if (err) {
+                            console.error(err);
+                            res.status(401).send({'status': 'Problem posting messages, check log for further assistance'});
+                        } else {
+                            res.status(200).send({'status': 'Posted Successfully'});
+                        }
+                    });
+                }
             });
-        };
+        });
+    };
+
+    this.Register = function (req, res) {
+        connection.acquire(function (err, con){
+
+            console.log('deviceid: ' + req.deviceid);
+            console.log('devicename: '+ req.devicename);
+            console.log('tokenid: ' + req.tokenid);
+
+            var devices = {
+                'DeviceId' : req.deviceid,
+                'DeviceName' : req.devicename,
+                'TokenId' : req.tokenid
+            };
+
+            var sql = con.query('INSERT INTO Devices SET ?', devices, function (err, result) {
+                if(err){
+                    console.error(err);
+                }else{
+                    console.log(result);
+                    res.status(200).send({status: 0, message: 'Requested for registration'});
+                }
+                console.log('Register Device : ' + sql.sql);
+            });
+
+            con.release();
+        });
+    };
+
+    this.RegisterUser = function (req, res){
+        connection.acquire(function (err, con){
+
+            console.log('deviceid: ' + req.deviceid);
+            console.log('requested: '+ true);
+            console.log('tokenid: ' + req.tokenid);
+
+            var sql1 = con.query('SELECT * FROM Devices WHERE DeviceId = ?', [req.deviceid], function (err, result) {
+                console.log('DeviceCheck : ' + sql1.sql);
+                if (err) {
+                    console.error(err);
+                    res.status(401).send({'status': 'Problem Registering, check log for further assistance'});
+                } else if(result.length != 0) {
+                    var sql = con.query('UPDATE Devices SET Requested = ? WHERE DeviceId = ? ', [true, req.deviceid], function (err, result) {
+                        if(err){
+                            console.error(err);
+                        }else{
+                            console.log(result);
+                            res.status(200).send({status: 0, message: 'Your request has been sent to the admin. Please wait till you get Notification of your credentials'});
+                        }
+                        console.log('Requested Credentials : ' + sql.sql);
+                    });
+                } else{
+                    res.status(401).send({'status' : 'Try reinstalling the app'});
+                }
+            });
+
+
+
+            con.release();
+        });
+    };
 
 }
 
