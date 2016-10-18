@@ -94,8 +94,6 @@ function Admin() {
                                    });
                               }
                           });
-
-                          res.status(200).send({'status': 'User created successfully'});
                       }
                       else{
                           res.status(200).send({'status': 'No requested users'});
