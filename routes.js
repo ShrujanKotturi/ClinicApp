@@ -85,7 +85,7 @@ function Authenticate(token){
                 if(err){
                     reject();
                 }else{
-                    var bytes = cryptojs.AES.decrypt(decodedJWT.token, 'abc123!@#');
+                    var bytes = cryptojs.AES.decrypt(decoded.token, 'abc123!@#');
                     var tokenData = JSON.parse(bytes.toString(cryptojs.enc.Utf8));
                     console.log("auth token id " + tokenData);
                     resolve(tokenData);
