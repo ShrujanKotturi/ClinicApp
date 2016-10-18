@@ -7,7 +7,7 @@ function User() {
     //User
     this.UserLogin = function (req, res) {
         connection.acquire(function (err, con) {
-            var sql = con.query('SELECT * FROM Users WHERE UserName = ? AND UserPassword = ?', [req.username, req.userpassword], function (err, result) {
+            var sql = con.query('SELECT * FROM Users WHERE UserName = ? AND UserPassword = SHA1(?)', [req.username, req.userpassword], function (err, result) {
                 console.log('UserLogin : ' + sql.sql);
                 if (err) {
                     console.error(err);

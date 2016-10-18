@@ -49,7 +49,7 @@ function Admin() {
               }else{
                   var user = 'User Name : ' + req.username + " , " + 'User Password : ' + req.password;
 
-                  var sql = con.query('INSERT INTO Users SET UserName = ?, UserPassword = ?, DeviceId = ?', [req.username, req.password, req.deviceid], function (err, result2) {
+                  var sql = con.query('INSERT INTO Users SET UserName = ?, UserPassword = SHA1(?), DeviceId = ?', [req.username, req.password, req.deviceid], function (err, result2) {
                       if (err) {
                           console.error(err);
                           res.status(400).send({'status': 'Failed to create a user'});
@@ -95,7 +95,7 @@ function Admin() {
                               }
                           });
 
-                          res.send({'status': 'User created successfully'});
+                          res.status(200).send({'status': 'User created successfully'});
                       }
                       else{
                           res.status(200).send({'status': 'No requested users'});

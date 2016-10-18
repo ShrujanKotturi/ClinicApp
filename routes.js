@@ -57,7 +57,7 @@ function requireAuthentication (req, res, next) {
 
     Authenticate(token).then(function (tokenData){
         res.locals.user = tokenData.UserId;
-        console.log("auth token id " + util.inspect(res.locals.user));
+        console.log("auth token id " + util.inspect(res.locals));
         next();
     }, function () {
         console.log(err);
@@ -81,11 +81,17 @@ function requireAdminAuthentication (req, res, next) {
 function Authenticate(token){
     return new Promise(function(resolve, reject){
         try{
-            var decodedJWT = jwt.verify(token, 'qwerty098');
-            var bytes = cryptojs.AES.decrypt(decodedJWT.token, 'abc123!@#');
-            var tokenData = JSON.parse(bytes.toString(cryptojs.enc.Utf8));
-            console.log("auth token id " + tokenData);
-            resolve(tokenData);
+            var decodedJWT = jwt.verify(token, 'qwerty098', function (err, decoded) {
+                if(err){
+                    reject();
+                }else{
+                    var bytes = cryptojs.AES.decrypt(decodedJWT.token, 'abc123!@#');
+                    var tokenData = JSON.parse(bytes.toString(cryptojs.enc.Utf8));
+                    console.log("auth token id " + tokenData);
+                    resolve(tokenData);
+                }
+            });
+
         }catch(err){
             reject();
         }
