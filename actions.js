@@ -85,7 +85,7 @@ function Admin() {
                                                     console.error(err);
                                                     res.status(400).send({'status':'Unable to update the request'});
                                                 }else{
-                                                    res.status(200).send({status : 0, message: 'Message sent to the user' });
+                                                    res.status(200).send({'status' : 'Message sent to the user' });
                                                 }
 
                                            });
