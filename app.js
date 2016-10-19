@@ -25,6 +25,8 @@ app.use(function (req, res, next) {
     next();
 });
 
+app.use('/static', express.static('public'));
+
 var connection = require('./connection');
 var routes = require('./routes');
 
