@@ -69,7 +69,7 @@ function User() {
                             console.error(err);
                             res.status(400).send({'status': 'Error getting the questions'});
                         } else if (result2.length != 0) {
-                            res.status(200).json(result[0]);
+                            res.status(200).json(result2[0]);
                         } else {
                             res.status(200).send({'status': 'Couldn\'t get the questions'});
                         }
