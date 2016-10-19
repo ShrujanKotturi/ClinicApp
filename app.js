@@ -2,6 +2,7 @@ var express = require('express');
 
 var bodyparser = require('body-parser');
 var app = express();
+var path = require('path');
 
 app.use(bodyparser.urlencoded({extended: true}));
 app.use(bodyparser.json());
@@ -24,8 +25,13 @@ app.use(function (req, res, next) {
     // Pass to next layer of middleware
     next();
 });
-
 app.use('/static', express.static('public'));
+
+app.get('/static', function(req, res) {
+    res.sendFile(path.join(__dirname + '/index.html'));
+});
+
+
 
 var connection = require('./connection');
 var routes = require('./routes');
