@@ -1,0 +1,315 @@
+<html lang="en">
+<head>
+      <title>Login Form</title>
+
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+  <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+ 
+
+</head>
+
+
+<style>
+
+input::-webkit-input-placeholder {  /*for admin and pwd place holder*/
+color: red ;
+}
+
+    
+body
+{
+    background: url('http://image.shutterstock.com/z/stock-photo-family-doctor-over-blue-background-health-care-93865330.jpg') fixed;
+    background-size: cover;
+    padding: 0;
+    margin: 0;
+}
+
+.wrap
+{
+    width: 100%;
+    height: 100%;
+    min-height: 100%;
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 99;
+}
+
+p.form-title
+{
+    font-family: 'Open Sans' , sans-serif;
+    font-size: 40px;
+    font-weight: 600;
+    text-align: center;
+    color: #e00b40;
+    margin-top: 5%;
+    text-transform: uppercase;
+    letter-spacing: 4px;
+}
+
+form
+{
+    width: 250px;
+    margin: 0 auto;
+}
+
+form.login input[type="text"], form.login input[type="password"]
+{
+    width: 100%;
+    margin: 0;
+    padding: 5px 10px;
+    background: 0;
+    border: 0;
+    border-bottom: 1px solid #000000;
+    outline: 0;
+    font-style: italic;
+    font-size: 12px;
+    font-weight: 400;
+    letter-spacing: 1px;
+    margin-bottom: 5px;
+    color: #FFFFFF;
+    outline: 0;
+}
+
+form.login input[type="submit"]
+{
+    width: 100%;
+    font-size: 30px;
+    text-transform: uppercase;
+    font-weight: 500;
+    margin-top: 16px;
+    outline: 0;
+    cursor: pointer;
+    letter-spacing: 1px;
+}
+
+form.login input[type="submit"]:hover
+{
+    transition: background-color 0.5s ease;
+}
+
+form.login .remember-forgot
+{
+    float: left;
+    width: 100%;
+    margin: 10px 0 0 0;
+}
+form.login .forgot-pass-content
+{
+    min-height: 20px;
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
+form.login label, form.login a
+{
+    font-size: 12px;
+    font-weight: 400;
+    color: #FFFFFF;
+}
+
+form.login a
+{
+    transition: color 0.5s ease;
+}
+
+form.login a:hover
+{
+    color: #2ecc71;
+}
+
+.pr-wrap
+{
+    width: 100%;
+    height: 100%;
+    min-height: 100%;
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 999;
+    display: none;
+}
+
+.show-pass-reset
+{
+    display: block !important;
+}
+
+.pass-reset
+{
+    margin: 0 auto;
+    width: 250px;
+    position: relative;
+    margin-top: 22%;
+    z-index: 999;
+    background: #FFFFFF;
+    padding: 20px 15px;
+}
+
+.pass-reset label
+{
+    font-size: 12px;
+    font-weight: 400;
+    margin-bottom: 15px;
+}
+
+.pass-reset input[type="email"]
+{
+    width: 100%;
+    margin: 5px 0 0 0;
+    padding: 5px 10px;
+    background: 0;
+    border: 0;
+    border-bottom: 1px solid #000000;
+    outline: 0;
+    font-style: italic;
+    font-size: 12px;
+    font-weight: 400;
+    letter-spacing: 1px;
+    margin-bottom: 5px;
+    color: #000000;
+    outline: 0;
+}
+
+.pass-reset input[type="submit"]
+{
+    width: 100%;
+    border: 0;
+    font-size: 14px;
+    text-transform: uppercase;
+    font-weight: 500;
+    margin-top: 10px;
+    outline: 0;
+    cursor: pointer;
+    letter-spacing: 1px;
+}
+
+.pass-reset input[type="submit"]:hover
+{
+    transition: background-color 0.5s ease;
+}
+
+
+    </style>
+
+
+<script>
+
+
+
+function visitExperience()
+   {
+        $("#username").text("Hello world!");
+   }
+$( document ).ready(function() {
+   if(getCookie("Auth")!=""){
+		window.location.href='second.html';
+   }
+});
+
+
+
+function getCookie(cname) {
+    var name = cname + "=";
+    var ca = document.cookie.split(';');
+    for(var i = 0; i <ca.length; i++) {
+        var c = ca[i];
+        while (c.charAt(0)==' ') {
+            c = c.substring(1);
+        }
+        if (c.indexOf(name) == 0) {
+            return c.substring(name.length,c.length);
+        }
+    }
+    return "";
+}
+
+function validateAdmin()
+{
+
+
+   var name1 = document.getElementById("username").value;
+   var pwd1 = document.getElementById("pwd").value;
+
+
+var xmlhttp = new XMLHttpRequest();
+		var url = "http://ip.jsontest.com/";
+
+		xmlhttp.onreadystatechange = function() {
+			if (this.readyState == 4 && this.status == 200) {
+				var myArr = JSON.parse(this.responseText);
+				myFunction(myArr);
+			}
+		};
+
+
+  console.log(name1);
+
+
+$.ajax('http://52.42.214.119:3000/AdminLogin', {
+  method: 'POST',
+  crossdomain:true,
+  data: {
+    adminname: name1,
+    adminpassword: pwd1
+  }
+}).then(function(data){
+   console.log(data);
+  console.log(data.status);
+
+  if(data.status == "Admin authenticated")
+  {
+      console.log("success");
+	  document.cookie="Auth="+data.token;
+      window.location.href='second.html';
+	  
+
+  }
+  else
+  {
+      alert("Wrong credentials");
+  }
+  
+});
+
+
+
+
+
+
+/*   if(name == "admin" && pwd=="admin")
+   {
+ window.location.href='second.html';
+   }
+   else
+   {
+       document.getElementById("message").innerHTML = "Wrong Credentials";
+      // window.location.href='http://www.google.com/';
+   }*/
+
+}
+
+    </script>
+
+
+<div class="container">
+    <div class="row">
+        <div class="col-md-12">
+            
+            <div class="wrap">
+                <p class="form-title">
+                    Sign In</p>
+                <form   class="login">
+                <input id="username" type="text" placeholder="Admin"  />
+                <input id="pwd" type="password" placeholder="Password" />
+                <p class="submit"><input id="signin" type="button" value="Sign In" onclick=validateAdmin() class="btn btn-success btn-sm" /></p>
+
+      <p id="message"</p>
+
+
+                </form>
+            </div>
+        </div>
+    </div>
+   
+</div>
+</html>

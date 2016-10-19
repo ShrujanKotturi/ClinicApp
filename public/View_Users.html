@@ -1,0 +1,291 @@
+<html>
+
+<head>
+   
+    <link rel="stylesheet" href="http://cdn.datatables.net/1.10.12/css/jquery.dataTables.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script> 
+    <script src="http://cdn.datatables.net/1.10.12/js/jquery.dataTables.min.js"></script>
+
+ <script>
+ $( document ).ready(function() {
+   if(getCookie("Auth")==""){
+		window.location.href='index.html';
+   }
+});
+function getCookie(cname) {
+    var name = cname + "=";
+    var ca = document.cookie.split(';');
+    for(var i = 0; i <ca.length; i++) {
+        var c = ca[i];
+        while (c.charAt(0)==' ') {
+            c = c.substring(1);
+        }
+        if (c.indexOf(name) == 0) {
+            return c.substring(name.length,c.length);
+        }
+    }
+    return "";
+}
+
+  function functionName()
+  {
+
+var xmlhttp = new XMLHttpRequest();
+
+		var url = "http://52.42.214.119:3000/GetAllUsers";
+
+		xmlhttp.onreadystatechange = function() {
+			if (this.readyState == 4 && this.status == 200) {
+				var myArr = JSON.parse(this.responseText);
+				
+               // var json1 = JSON.parse(myArr);
+                displayed(myArr);
+			}
+		};
+		xmlhttp.open("GET", url, true);
+		xmlhttp.setRequestHeader("Auth", getCookie("Auth"));
+		xmlhttp.send();
+
+  }
+
+function displayed(arr)
+{
+   
+    var i;
+
+    document.write("<html id='fullData'><head>");
+
+    document.write(" <link rel='stylesheet' href='http://cdn.datatables.net/1.10.12/css/jquery.dataTables.min.css'>");
+  
+    document.write("</head><body >");
+
+    document.write("<table id='example' class='display' cellspacing='0' width='100%'>");
+    document.write("<thead><tr><th>ID</th><th>User</th></tr></thead>");
+   document.write("<tbody>");
+    for(i = 0; i < arr.length; i++) {
+document.write("<tr><td align='center'>"+arr[i].UserId+"</td><td align='center'>"+arr[i].UserName+"</td></tr>")
+       
+
+       
+    }
+    document.write("</tbody></table></body></html>")  
+    ready1();
+}
+
+   </script>
+<script>
+    var result;
+window.onload = functionName();
+
+    function ready1() 
+    {
+        console.log("ready1");
+     var table = $('#example').DataTable();
+
+     $('#example tbody').on('click', 'tr', function () 
+       {
+          
+          var data = table.row(this).data();
+           console.log("selected "  + data[0]);
+           getDetails(data[0],data[1])
+      });
+      
+    }
+
+
+ function refresh()
+{
+
+document.close();
+functionName();
+}
+
+
+function downloadCurrentDocument() 
+{
+
+printContents = result;
+
+        w=window.open();
+ w.document.write(printContents);
+ w.print();
+ w.close();
+
+}
+
+
+
+function evaluateCategory( type1, count1)
+{
+    if(type1 == "Medication Usage")
+    {
+        if(count1 ==21 )
+        {
+        return "Adherent "
+        }
+        else
+        {
+         return "Not Adherent "
+        }
+    }
+
+    else if(type1 == "General")
+    {
+        return 0;
+    }
+
+
+    else if(type1 == "Diet")
+    {
+        if(count1 >= 52)
+        {
+            return "Adherent " 
+        }
+        else if (count1 >=33 && count1 <= 51 )
+        {
+            return "medium diet quality"
+        }
+        else
+        {
+            return " low diet quality"
+        }
+    }
+    else if(type1 =="Physical Activity")
+    {
+           if(count1 >= 8)
+        {
+            return "Adherent to physical activity recommendations " 
+        }
+        else
+        {
+            return "Not Adherent "
+        }
+    }
+
+    else if(type1 == "Smoking")
+    {
+        if(count1 ==0)
+        {
+           return "Adherent"
+        }
+        else
+        {
+            return "Not Adherent "
+        }
+    }
+    else if(type1 =="Weight management")
+    {
+        if(count1 >=40)
+        {
+           return "Adherent"
+        }
+        else
+        {
+            return "Not Adherent "
+        }
+
+    }
+    
+}
+function getDetails(data,uname)
+{
+
+
+    
+    document.open();
+    document.write("<html id = 'details'><head>");
+    
+    document.write("<body background='http://clipart.me/wp-content/uploads/2011/03/pattern_preview.png'>");
+    result = "<html id = 'details'><head><body>";
+
+    var xmlhttp = new XMLHttpRequest();
+	
+        var url ="http://52.42.214.119:3000/GetUserResponse?UserId="+data;
+		xmlhttp.onreadystatechange = function() {
+			if (this.readyState == 4 && this.status == 200) {
+				var myArr = JSON.parse(this.responseText);
+				var i;
+                console.log(myArr.length);
+           if(myArr.length > 5)
+           {
+               var type=myArr[0].Type;
+               var count=0;
+               var myvalue=[];
+               myvalue["yes"]=0;
+               myvalue["no"]=0;
+               myvalue["Strongly Disagree"]=1;
+               myvalue["Disagree"]=2;
+               myvalue["Not Sure"] = 3;
+               myvalue["Agree"]=4;
+               myvalue["Strongly Agree"]=5;
+
+                for(i = 0; i < myArr.length; i++) 
+                {   
+
+                        if(i!=0)
+                        {
+                            if(myArr[i].Type != type)
+                            {
+
+                            var categoryResult = evaluateCategory(type,count); 
+
+                                document.write("<b><h><p> Result of  "+ type  +" -> "+categoryResult+"</p></h></b>" );
+                                result= result + "<b><h><p> Result of  "+ type  +" -> "+categoryResult+"</p></h></b>" ;
+                                type =myArr[i].Type ;
+                                count=0;
+                                if(!isNaN(myArr[i].SelectedChoice))     //NaN - Not a Number
+                                {     
+                                  count = Number(count) + Number(myArr[i].SelectedChoice);
+                                }
+                            }
+                            else
+                            {
+                                
+                                if(!isNaN(myArr[i].SelectedChoice))     //NaN - Not a Number
+                                {     
+                                  count = Number(count) + Number(myArr[i].SelectedChoice);
+                                }
+                                else
+                                {
+                                    
+                                    console.log(myvalue[myArr[i].SelectedChoice]);
+                                    count = Number(count) + Number(myvalue[myArr[i].SelectedChoice]);
+                                }
+                                
+                            }
+                           
+                        }
+                     
+                    document.write("<p>"+ myArr[i].QuestionId + ")    "+myArr[i]. Question+"   <p>   User Answer ->   "+myArr[i].SelectedChoice  +"     </p></p>");
+                    result = result + "<p>"+ myArr[i].QuestionId + ")     "+myArr[i]. Question+"   <p>   User Answer ->   "+myArr[i].SelectedChoice  +"     </p></p>";
+                }
+           }
+           else
+           {
+               document.write("<p> No response found for user </p>");
+               result = result + "<p> No response found for user </p>";
+           }
+
+                }
+
+     
+                
+			};
+
+            document.write("<p><b>Response of User "+uname+"</b></p>")
+            document.write("<p><input id='signin' type='button' value='Download' onclick=downloadCurrentDocument() class='btn btn-success btn-sm' />");
+       
+          document.write("<input id='signin' type='button' value='Cancel' onclick=refresh() class='btn btn-success btn-sm' /></p>");
+                document.write("</body></html>");
+
+		
+		xmlhttp.open("GET", url, true);
+		xmlhttp.setRequestHeader("Auth", getCookie("Auth"));
+		xmlhttp.send();
+        }
+    
+  </script>
+</head>
+<body>
+</body>
+</html>
